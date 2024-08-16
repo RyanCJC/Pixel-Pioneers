@@ -5,12 +5,81 @@ const MintTokenModal = ({ onSubmit, onClose }) => {
   const [walletAddress, setWalletAddress] = useState("");
   const [to, setTo] = useState("");
   const [amount, setAmount] = useState("");
-  const contractAddress = "0xC523A5A3E2A037c9c9fd81fB962db1f87A1ea4A3";
+  const contractAddress = "0x1172DfA5Afd52D46617d7693DEe911887c33B4C9";
   const fallbackUrl = "https://postman-echo.com/post?";
 
-  const handleSubmit = (e) => {
+  // State to manage transaction feedback
+  const [transactionStatus, setTransactionStatus] = useState(null);
+  const [transactionHash, setTransactionHash] = useState(null);
+  const [transactionError, setTransactionError] = useState(null);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({ walletAddress, to, amount, contractAddress, fallbackUrl });
+    try {
+      setTransactionStatus("pending");
+
+      // Submit the transaction to the smart contract
+      const response = await onSubmit({
+        walletAddress,
+        to,
+        amount,
+        contractAddress,
+        fallbackUrl,
+      });
+
+      // Assuming the response includes a transaction hash
+      setTransactionHash(response.transactionHash);
+
+      // Set up listeners for callback responses
+      // This assumes there's a function to handle callbacks based on a transaction hash
+      listenForCallback(response.transactionHash);
+    } catch (error) {
+      setTransactionError("Transaction submission failed");
+      setTransactionStatus("failed");
+    }
+  };
+
+  // Function to listen for callbacks and handle responses
+  const listenForCallback = (txHash) => {
+    // Mocking callback listener (replace with actual callback handling logic)
+    setTimeout(() => {
+      // Simulate different outcomes
+      const successResponse = {
+        status: 200,
+        result: {
+          transactionHash: txHash,
+          nonce: 752,
+          from: walletAddress,
+          status: "success",
+          receipt: {}, // Transaction receipt object
+        },
+      };
+
+      const failResponse = {
+        status: 200,
+        result: {
+          transactionHash: txHash,
+          nonce: 752,
+          from: walletAddress,
+          status: "failed",
+          message: "Error message",
+        },
+      };
+
+      // Mock response: replace with logic to get actual response
+      const callbackResponse = Math.random() > 0.5 ? successResponse : failResponse;
+
+      handleCallbackResponse(callbackResponse);
+    }, 3000); // Delay to simulate callback time
+  };
+
+  const handleCallbackResponse = (response) => {
+    if (response.result.status === "success") {
+      setTransactionStatus("success");
+    } else if (response.result.status === "failed") {
+      setTransactionStatus("failed");
+      setTransactionError(response.result.message);
+    }
   };
 
   return (
@@ -57,30 +126,6 @@ const MintTokenModal = ({ onSubmit, onClose }) => {
               required
             />
           </div>
-          <div className="mb-4 hidden">
-            <label htmlFor="contractAddress" className="block mb-2">
-              Contract Address
-            </label>
-            <input
-              type="text"
-              id="contractAddress"
-              value={contractAddress}
-              className="w-full px-3 py-2 border rounded-md"
-              required
-            />
-          </div>
-          <div className="mb-4 hidden">
-            <label htmlFor="fallbackUrl" className="block mb-2">
-              Fallback URL
-            </label>
-            <input
-              type="text"
-              id="fallbackUrl"
-              value={fallbackUrl}
-              className="w-full px-3 py-2 border rounded-md"
-              required
-            />
-          </div>
           <div className="flex justify-end">
             <button
               type="button"
@@ -97,6 +142,13 @@ const MintTokenModal = ({ onSubmit, onClose }) => {
             </button>
           </div>
         </form>
+
+        {/* Feedback message based on transaction status */}
+        {transactionStatus === "pending" && <p>Transaction is pending...</p>}
+        {transactionStatus === "success" && <p>Transaction successful!</p>}
+        {transactionStatus === "failed" && (
+          <p>Transaction failed: {transactionError}</p>
+        )}
       </div>
     </div>
   );

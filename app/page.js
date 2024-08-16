@@ -2,45 +2,61 @@
 import { useState, useEffect } from "react";
 import MintTokenModal from "./components/Mint-token";
 import TransferTokenModal from "./components/Transfer-token";
+import ListProductModal from "./components/ListProductModal.js"; 
+import ProductListing from "./components/ProductListing";
+import SmartCertificateForm from "./components/SmartCertificateForm"; //Smart cert
 import { motion, AnimatePresence } from "framer-motion";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Home() {
   const [walletAddress, setWalletAddress] = useState(null);
-
   const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
-
-  const openMintModal = () => {
-    setIsMintModalOpen(true);
-  };
-
-  const closeMintModal = () => {
-    setIsMintModalOpen(false);
-  };
-
-  const openTransferModal = () => {
-    setIsTransferModalOpen(true);
-  };
-
-  const closeTransferModal = () => {
-    setIsTransferModalOpen(false);
-  };
+  const [products, setProducts] = useState([]); // State for products
+  const [formData, setFormData] = useState([]); // Create Smart Cert
 
   useEffect(() => {
     const storedWalletAddress = sessionStorage.getItem("walletAddress");
     if (storedWalletAddress) {
       setWalletAddress(storedWalletAddress);
     }
+
+    // Fetch products from an API or a static list
+    const fetchProducts = async () => {
+      // Example static list; replace with an actual API call
+      const productList = [
+        { id: 1, name: "Product 1", description: "This is Product 1", price: 29.99 },
+        { id: 2, name: "Product 2", description: "This is Product 2", price: 19.99 },
+        { id: 3, name: "Product 3", description: "This is Product 3", price: 39.99 },
+      ];
+      setProducts(productList);
+    };
+
+    fetchProducts();
   }, []);
+
+  const openModal = (modalType) => {
+    if (modalType === "mint") {
+      setIsMintModalOpen(true);
+    } else if (modalType === "transfer") {
+      setIsTransferModalOpen(true);
+    }
+  };
+
+  const closeModal = (modalType) => {
+    if (modalType === "mint") {
+      setIsMintModalOpen(false);
+    } else if (modalType === "transfer") {
+      setIsTransferModalOpen(false);
+    }
+  };
 
   const clearWalletAddress = () => {
     sessionStorage.removeItem("walletAddress");
     setWalletAddress(null);
   };
 
-  //fix function here late
   const handleMintSubmit = async (data) => {
     try {
       const response = await fetch(
@@ -67,21 +83,17 @@ export default function Home() {
         throw new Error("Wallet address not found in the response");
       }
 
-      toast.success(
-        `🦄 Minted token successfully!
-        Wallet address: ${walletAddress}`,
-        {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        }
-      );
-      closeModal();
+      toast.success(`🦄 Token minted successfully! Wallet address: ${walletAddress}`, {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+
+      closeModal("mint");
     } catch (error) {
       console.error("Error minting token:", error);
       toast.error("🦄 Error minting token", {
@@ -91,15 +103,11 @@ export default function Home() {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined,
         theme: "light",
       });
-      // Don't send the request if there's an error
-      return;
     }
   };
 
-  //fix function here late
   const handleTransferSubmit = async (data) => {
     try {
       const response = await fetch(
@@ -120,52 +128,41 @@ export default function Home() {
       }
 
       const result = await response.json();
-      console.log("Transfered Token:", result);
-      // const walletAddress = result.result.wallet.wallet_address;
-      // //   console.log("Wallet address:", walletAddress);
-      // // Store the wallet address in sessionStorage
-      // sessionStorage.setItem("walletAddress", walletAddress);
+      console.log("Token Transferred:", result);
 
       if (!walletAddress) {
         throw new Error("Wallet address not found in the response");
       }
 
-      toast.success(
-        `🦄 Token transfered successfully!
-        Wallet address: ${walletAddress}`,
-        {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        }
-      );
-      closeModal();
-    } catch (error) {
-      console.error("Error transfering token:", error);
-      toast.error("🦄 Error transfering token", {
+      toast.success(`🦄 Token transferred successfully! Wallet address: ${walletAddress}`, {
         position: "bottom-center",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined,
         theme: "light",
       });
-      // Don't send the request if there's an error
-      return;
+
+      closeModal("transfer");
+    } catch (error) {
+      console.error("Error transferring token:", error);
+      toast.error("🦄 Error transferring token", {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
     }
   };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center ">
       <h1 className="font-bold text-2xl uppercase text-center">
-        Maschain API Workshop Demo
+        Agriculture Supply Chain Application
       </h1>
       <p className="text-sm text-gray-500 lowercase font-normal mt-4">
         {walletAddress ? (
@@ -181,14 +178,13 @@ export default function Home() {
                 Disconnect Wallet
               </button>
               <button
-                onClick={openMintModal}
+                onClick={() => openModal("mint")}
                 className="mt-4 border w-full rounded-md py-2 px-4 hover:bg-black hover:text-white transition-all duration-300"
               >
                 Mint Token
               </button>
-
               <button
-                onClick={openTransferModal}
+                onClick={() => openModal("transfer")}
                 className="mt-4 w-full border rounded-md py-2 px-4 hover:bg-black hover:text-white transition-all duration-300"
               >
                 Transfer Token
@@ -199,6 +195,19 @@ export default function Home() {
           "Create Wallet to Get Started"
         )}
       </p>
+
+      {/* Product Listing Section */}
+      <section className="w-full mt-10">
+        <h2 className="text-xl font-semibold text-center mb-4">Available Products</h2>
+        <ProductListing products={products} />
+      </section>
+      <br></br> 
+      {/* Smart Cert creator */}
+      <section className="w-full mt-10">
+        <h2 className="text-xl font-semibold text-center mb-4">Register for Smart Certificate</h2>
+        <SmartCertificateForm formData={setFormData} />
+      </section>
+
       <AnimatePresence>
         {isMintModalOpen && (
           <motion.div
@@ -209,7 +218,7 @@ export default function Home() {
           >
             <MintTokenModal
               onSubmit={handleMintSubmit}
-              onClose={closeMintModal}
+              onClose={() => closeModal("mint")}
             />
           </motion.div>
         )}
@@ -224,7 +233,7 @@ export default function Home() {
           >
             <TransferTokenModal
               onSubmit={handleTransferSubmit}
-              onClose={closeTransferModal}
+              onClose={() => closeModal("transfer")}
             />
           </motion.div>
         )}

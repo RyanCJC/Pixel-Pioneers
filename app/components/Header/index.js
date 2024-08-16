@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Header = () => {
+const Header = ({ mintedAmount, smartContractImageUrl }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
@@ -36,10 +36,8 @@ const Header = () => {
       }
 
       const result = await response.json();
-      //   console.log("User created:", result);
       const walletAddress = result.result.wallet.wallet_address;
-      //   console.log("Wallet address:", walletAddress);
-      // Store the wallet address in sessionStorage
+
       sessionStorage.setItem("walletAddress", walletAddress);
 
       if (!walletAddress) {
@@ -73,8 +71,6 @@ const Header = () => {
         progress: undefined,
         theme: "light",
       });
-      // Don't send the request if there's an error
-      return;
     }
   };
 
@@ -82,7 +78,15 @@ const Header = () => {
     <header className="w-full py-6 lg:py-4 relative border-b">
       <div className="container mx-auto px-8 lg:px-4 flex items-center justify-between">
         <div className="flex items-center">
-          <h1 className="text-xl font-bold">Maschain Demo</h1>
+          <h1 className="text-xl font-bold">AgriKey</h1>
+          <span className="ml-4 text-lg">Minted Amount: {mintedAmount}</span>
+          {smartContractImageUrl && (
+            <img
+              src={smartContractImageUrl}
+              alt="Smart Contract"
+              className="ml-4 w-10 h-10 object-cover rounded-full"
+            />
+          )}
         </div>
         <button
           onClick={openModal}
