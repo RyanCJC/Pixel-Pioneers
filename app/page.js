@@ -249,7 +249,7 @@ export default function Home() {
       <nav className="flex justify-around py-4 bg-gray-200 shadow-md">
         <button
           onClick={() => handleMenuClick("home")}
-          className={`text-lg ${activeMenu === "home" ? "font-bold text-blue-600" : "text-gray-700" }`}
+          className={`text-lg ${activeMenu === "home" ? "font-bold text-blue-600" : "text-gray-700"}`}
         >
           Home
         </button>
