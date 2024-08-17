@@ -36,7 +36,7 @@ const TransferTokenModal = ({ onSubmit, onClose }) => {
               Recipient Address
             </label>
             <input
-              type="email"
+              type="text"
               id="to"
               value={to}
               onChange={(e) => setTo(e.target.value)}

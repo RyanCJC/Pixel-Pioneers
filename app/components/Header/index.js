@@ -1,22 +1,32 @@
 "use client";
 import React, { useState } from "react";
 import CreateWalletModal from "../Create-wallet";
+import MintTokenModal from "../Mint-token";
 import { motion, AnimatePresence } from "framer-motion";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Header = ({ mintedAmount, smartContractImageUrl }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const Header = () => {
+  const [isCreateWalletModalOpen, setIsCreateWalletModalOpen] = useState(false);
+  const [isMintTokenModalOpen, setIsMintTokenModalOpen] = useState(false);
 
-  const openModal = () => {
-    setIsModalOpen(true);
+  const openCreateWalletModal = () => {
+    setIsCreateWalletModalOpen(true);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const closeCreateWalletModal = () => {
+    setIsCreateWalletModalOpen(false);
   };
 
-  const handleSubmit = async (data) => {
+  const openMintTokenModal = () => {
+    setIsMintTokenModalOpen(true);
+  };
+
+  const closeMintTokenModal = () => {
+    setIsMintTokenModalOpen(false);
+  };
+
+  const handleCreateWalletSubmit = async (data) => {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/wallet/create-user`,
@@ -58,7 +68,7 @@ const Header = ({ mintedAmount, smartContractImageUrl }) => {
           theme: "light",
         }
       );
-      closeModal();
+      closeCreateWalletModal();
     } catch (error) {
       console.error("Error creating user:", error);
       toast.error("🦄 Error creating user", {
@@ -74,47 +84,84 @@ const Header = ({ mintedAmount, smartContractImageUrl }) => {
     }
   };
 
+  const handleMintTokenSubmit = async (data) => {
+    try {
+      // Example toast notification for minting success
+      toast.success("🦄 Token minted successfully!", {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      closeMintTokenModal();
+    } catch (error) {
+      console.error("Error minting token:", error);
+      toast.error("🦄 Error minting token", {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
   return (
     <header className="w-full py-6 lg:py-4 relative border-b">
       <div className="container mx-auto px-8 lg:px-4 flex items-center justify-between">
-        <div className="flex items-center">
-          <h1 className="text-xl font-bold">AgriKey</h1>
-          <span className="ml-4 text-lg">Minted Amount: {mintedAmount}</span>
-          {smartContractImageUrl && (
-            <img
-              src={smartContractImageUrl}
-              alt="Smart Contract"
-              className="ml-4 w-10 h-10 object-cover rounded-full"
-            />
-          )}
+        <h1 className="text-xl font-bold">AgriKey</h1>
+        <div>
+          <button
+            onClick={openCreateWalletModal}
+            className="border rounded-md py-2 px-4 hover:bg-black hover:text-white transition-all duration-300"
+          >
+            {typeof window !== "undefined" &&
+            window.sessionStorage.getItem("walletAddress") ? (
+              <span className="text-sm">
+                {`${window.sessionStorage
+                  .getItem("walletAddress")
+                  .slice(0, 6)}...${window.sessionStorage
+                  .getItem("walletAddress")
+                  .slice(-4)}`}
+              </span>
+            ) : (
+              "Create Wallet"
+            )}
+          </button>
         </div>
-        <button
-          onClick={openModal}
-          className="border rounded-md py-2 px-4 hover:bg-black hover:text-white transition-all duration-300"
-        >
-          {typeof window !== "undefined" &&
-          window.sessionStorage.getItem("walletAddress") ? (
-            <span className="text-sm">
-              {`${window.sessionStorage
-                .getItem("walletAddress")
-                .slice(0, 6)}...${window.sessionStorage
-                .getItem("walletAddress")
-                .slice(-4)}`}
-            </span>
-          ) : (
-            "Create Wallet"
-          )}
-        </button>
       </div>
       <AnimatePresence>
-        {isModalOpen && (
+        {isCreateWalletModalOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.1 }}
           >
-            <CreateWalletModal onSubmit={handleSubmit} onClose={closeModal} />
+            <CreateWalletModal
+              onSubmit={handleCreateWalletSubmit}
+              onClose={closeCreateWalletModal}
+            />
+          </motion.div>
+        )}
+        {isMintTokenModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.1 }}
+          >
+            <MintTokenModal
+              onSubmit={handleMintTokenSubmit}
+              onClose={closeMintTokenModal}
+            />
           </motion.div>
         )}
       </AnimatePresence>

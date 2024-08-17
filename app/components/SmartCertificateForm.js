@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './SmartCertificateForm.css';
 
 const SmartCertificateForm = () => {
-    const [file, setFile] = useState(null);
     const [name, setName] = useState('');
     const [walletAddress, setWalletAddress] = useState('');
     const [email, setEmail] = useState('');
@@ -19,24 +17,19 @@ const SmartCertificateForm = () => {
 
         try {
             // Check if the wallet address exists
-            const response = await axios.get(`https://portal-testnet.maschain.com/api/wallet/wallet/${walletAddress}`, {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/wallet/wallet/${walletAddress}`, {
                 headers: {
-                    'client_id': '9b16ae5638534ae1961fb370f874b6cc',
-                    'client_secret': 'sk_9b16ae5638534ae1961fb370f874b6cc',
+                    'client_id': process.env.NEXT_PUBLIC_CLIENT_ID,
+                    'client_secret': process.env.NEXT_PUBLIC_CLIENT_SECRET,
                     'Content-Type': 'application/json'
                 }
-            }); 
-
-            console.log(response); // Debugging line to inspect the response
+            });
 
             if (response.data.status === 200 && response.data.result) {
-                setStatus('Wallet address exists.');
-            } else {
-                setStatus('Wallet address does not exist.');
+                setStatus('Thank you. Our team will review your form and contact you through email.');
             }
         } catch (error) {
-            console.error('Error checking wallet address:', error.response ? error.response.data : error.message);
-            setStatus('Error checking wallet address.');
+            setStatus('Wallet not existed. Please make sure credentials entered are correct.');
         }
 
         setShowStatusBox(true); // Show the status box
@@ -47,66 +40,146 @@ const SmartCertificateForm = () => {
     };
 
     return (
-        <div className="form-wrapper">
-            <div className={`form-container ${showStatusBox ? 'blurred' : ''}`}>
-                <h2>Check Wallet Address</h2>
+        <div style={styles.formWrapper}>
+            <div style={{ ...styles.formContainer, filter: showStatusBox ? 'blur(5px)' : 'none' }}>
+                <h2 style={styles.h2}>Enter your credentials here</h2>
+                <br></br>
                 <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="walletAddress">Wallet Address:</label>
+                    <div style={styles.formGroup}>
+                        <label htmlFor="walletAddress" style={styles.label}>Wallet Address:</label>
                         <input
                             id="walletAddress"
                             type="text"
-                            className="input-box"
+                            style={styles.inputBox}
                             value={walletAddress}
+                            placeholder='0x695d22...'
                             onChange={(e) => setWalletAddress(e.target.value)}
                             required
                         />
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="name">Your Full Name:</label>
+                    <div style={styles.formGroup}>
+                        <label htmlFor="name" style={styles.label}>Your Full Name:</label>
                         <input
                             id="name"
                             type="text"
-                            className="input-box"
+                            style={styles.inputBox}
                             value={name}
+                            placeholder='John Lee'
                             onChange={(e) => setName(e.target.value)}
                             required
                         />
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="email">Your Email:</label>
+                    <div style={styles.formGroup}>
+                        <label htmlFor="email" style={styles.label}>Your Email:</label>
                         <input
                             id="email"
-                            type="text"
-                            className="input-box"
+                            type="email"
+                            style={styles.inputBox}
                             value={email}
+                            placeholder='example123@mail.com'
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="fileUpload">Proof of Qualification:</label>
+                    <div style={styles.formGroup}>
+                        <label htmlFor="fileUpload" style={styles.label}>Proof of Qualification:</label>
                         <input
                             id="fileUpload"
                             type="file"
-                            className="input-box"
+                            style={styles.inputBox}
                             onChange={handleFileChange}
+                            //required
                         />
                     </div>
-                    <button type="submit" className="submit-button">Submit</button>
+                    <button type="submit" style={styles.submitButton}>Submit</button>
                 </form>
             </div>
 
             {showStatusBox && (
-                <div className="status-overlay">
-                    <div className="status-box">
+                <div style={styles.statusOverlay}>
+                    <div style={styles.statusBox}>
                         <p>{status}</p>
-                        <button onClick={handleCloseStatusBox} className="status-ok-button">OK</button>
+                        <button onClick={handleCloseStatusBox} style={styles.statusOkButton}>OK</button>
                     </div>
                 </div>
             )}
         </div>
     );
+};
+
+const styles = {
+    formWrapper: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '70vh',
+        backgroundColor: '#f4f4f4',
+    },
+    h2: {
+        fontWeight: 'bold',
+    },
+    formContainer: {
+        backgroundColor: '#ffffff',
+        padding: '20px',
+        borderRadius: '8px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        maxWidth: '400px',
+        width: '100%',
+        transition: 'filter 0.3s ease',
+    },
+    formGroup: {
+        marginBottom: '15px',
+    },
+    label: {
+        display: 'block',
+        marginBottom: '5px',
+        fontWeight: 'bold',
+        color: '#333333',
+    },
+    inputBox: {
+        width: '100%',
+        padding: '10px',
+        border: '1px solid #cccccc',
+        borderRadius: '4px',
+        boxSizing: 'border-box',
+    },
+    submitButton: {
+        width: '100%',
+        padding: '10px',
+        backgroundColor: '#047857',
+        border: 'none',
+        color: 'white',
+        borderRadius: '4px',
+        fontSize: '16px',
+        cursor: 'pointer',
+    },
+    statusOverlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    statusBox: {
+        backgroundColor: '#ffffff',
+        padding: '20px',
+        borderRadius: '8px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        textAlign: 'center',
+    },
+    statusOkButton: {
+        padding: '10px 20px',
+        backgroundColor: '#007bff',
+        border: 'none',
+        color: 'white',
+        borderRadius: '4px',
+        fontSize: '16px',
+        cursor: 'pointer',
+    },
 };
 
 export default SmartCertificateForm;
