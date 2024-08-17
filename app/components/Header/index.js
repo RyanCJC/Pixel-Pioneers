@@ -114,13 +114,13 @@ const Header = () => {
   };
 
   return (
-    <header className="w-full py-6 lg:py-4 relative border-b">
+    <header className="w-full py-6 lg:py-4 relative border-b bg-gradient-to-r from-green-400 via-green-500 to-green-600">
       <div className="container mx-auto px-8 lg:px-4 flex items-center justify-between">
-        <h1 className="text-xl font-bold">AgriKey</h1>
+        <h1 className="text-2xl font-bold text-white tracking-wider">AgriKey</h1>
         <div>
           <button
             onClick={openCreateWalletModal}
-            className="border rounded-md py-2 px-4 hover:bg-black hover:text-white transition-all duration-300"
+            className="bg-white border-2 border-green-500 rounded-full py-2 px-6 hover:bg-green-700 hover:text-white text-green-600 font-semibold transition-all duration-300 shadow-lg"
           >
             {typeof window !== "undefined" &&
             window.sessionStorage.getItem("walletAddress") ? (

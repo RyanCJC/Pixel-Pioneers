@@ -7,6 +7,8 @@ const SmartCertificateForm = () => {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState('');
     const [showStatusBox, setShowStatusBox] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
+    const [isActive, setIsActive] = useState(false);
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
@@ -43,7 +45,7 @@ const SmartCertificateForm = () => {
         <div style={styles.formWrapper}>
             <div style={{ ...styles.formContainer, filter: showStatusBox ? 'blur(5px)' : 'none' }}>
                 <h2 style={styles.h2}>Enter your credentials here</h2>
-                <br></br>
+                <br />
                 <form onSubmit={handleSubmit}>
                     <div style={styles.formGroup}>
                         <label htmlFor="walletAddress" style={styles.label}>Wallet Address:</label>
@@ -88,10 +90,22 @@ const SmartCertificateForm = () => {
                             type="file"
                             style={styles.inputBox}
                             onChange={handleFileChange}
-                            //required
                         />
                     </div>
-                    <button type="submit" style={styles.submitButton}>Submit</button>
+                    <button
+                        type="submit"
+                        style={{
+                            ...styles.submitButton,
+                            ...(isHovered && !isActive ? styles.submitButtonHover : {}),
+                            ...(isActive ? styles.submitButtonActive : {}),
+                        }}
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
+                        onMouseDown={() => setIsActive(true)}
+                        onMouseUp={() => setIsActive(false)}
+                    >
+                        Submit
+                    </button>
                 </form>
             </div>
 
@@ -152,6 +166,16 @@ const styles = {
         borderRadius: '4px',
         fontSize: '16px',
         cursor: 'pointer',
+        transition: 'background-color 0.3s ease, transform 0.2s ease',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    },
+    submitButtonHover: {
+        backgroundColor: '#035e43',
+        transform: 'scale(1.02)',
+    },
+    submitButtonActive: {
+        backgroundColor: '#065f46',
+        transform: 'scale(0.98)',
     },
     statusOverlay: {
         position: 'fixed',

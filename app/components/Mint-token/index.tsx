@@ -1,13 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const MintTokenModal = ({ onSubmit, onClose }) => {
-  const [walletAddress, setWalletAddress] = useState("");
-  const [to, setTo] = useState("");
+const MintTokenModal = ({ onSubmit, onClose, loggedInWalletAddress }) => {
   const [amount, setAmount] = useState("");
   const [customAmount, setCustomAmount] = useState("");
   const [selectedAmount, setSelectedAmount] = useState(null);
   const [isCustomAmount, setIsCustomAmount] = useState(false);
+  const [totalMinted, setTotalMinted] = useState(0); // State to keep track of total minted amount
   const contractAddress = "0x1172DfA5Afd52D46617d7693DEe911887c33B4C9";
   const fallbackUrl = "https://postman-echo.com/post?";
 
@@ -45,8 +44,8 @@ const MintTokenModal = ({ onSubmit, onClose }) => {
 
       // Submit the transaction to the smart contract
       const response = await onSubmit({
-        walletAddress,
-        to,
+        walletAddress: loggedInWalletAddress, // Use logged-in wallet address
+        to: loggedInWalletAddress, // Mint to the same wallet
         amount: finalAmount,
         contractAddress,
         fallbackUrl,
@@ -70,7 +69,7 @@ const MintTokenModal = ({ onSubmit, onClose }) => {
         result: {
           transactionHash: txHash,
           nonce: 752,
-          from: walletAddress,
+          from: loggedInWalletAddress,
           status: "success",
           receipt: {},
         },
@@ -81,7 +80,7 @@ const MintTokenModal = ({ onSubmit, onClose }) => {
         result: {
           transactionHash: txHash,
           nonce: 752,
-          from: walletAddress,
+          from: loggedInWalletAddress,
           status: "failed",
           message: "Error message",
         },
@@ -96,6 +95,8 @@ const MintTokenModal = ({ onSubmit, onClose }) => {
   const handleCallbackResponse = (response) => {
     if (response.result.status === "success") {
       setTransactionStatus("success");
+      const mintedAmount = isCustomAmount ? parseInt(customAmount) : selectedAmount;
+      setTotalMinted((prev) => prev + mintedAmount); // Update the total minted amount
     } else if (response.result.status === "failed") {
       setTransactionStatus("failed");
       setTransactionError(response.result.message);
@@ -106,29 +107,8 @@ const MintTokenModal = ({ onSubmit, onClose }) => {
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center backdrop-blur-md">
       <div className="bg-white p-8 rounded-lg shadow-lg lg:w-96 w-3/4">
         <h2 className="text-2xl font-bold mb-8">Mint Token</h2>
+        <p className="mb-4">Total AGC Minted: {totalMinted}</p>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="walletAddress" className="block mb-2">Wallet Address</label>
-            <input
-              type="text"
-              id="walletAddress"
-              value={walletAddress}
-              onChange={(e) => setWalletAddress(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="to" className="block mb-2">Recipient Address</label>
-            <input
-              type="text"
-              id="to"
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md"
-              required
-            />
-          </div>
           <div className="mb-4">
             <label className="block mb-2">Amount</label>
             <div className="flex flex-wrap gap-2 mb-2">

@@ -246,38 +246,53 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col px-4 bg-gray-100">
       {/* Navigation Menu */}
-      <nav className="flex justify-around py-4 bg-gray-200 shadow-md">
+      <nav className="flex justify-around py-4 bg-white shadow-lg top-0">
         <button
           onClick={() => handleMenuClick("home")}
-          className={`text-lg ${activeMenu === "home" ? "font-bold text-blue-600" : "text-gray-700"}`}
+          className={`px-4 py-2 rounded-md transition-all duration-300 ease-in-out 
+          ${activeMenu === "home" ? "font-bold text-blue-600 bg-blue-100 shadow-lg" : "text-gray-700 hover:text-blue-600 hover:bg-gray-200"}`}
         >
           Home
+          {activeMenu === "home" && <span className="absolute inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
         </button>
+  
         <button
           onClick={() => handleMenuClick("products")}
-          className={`text-lg ${activeMenu === "products" ? "font-bold text-blue-600" : "text-gray-700"}`}
+          className={`px-4 py-2 rounded-md transition-all duration-300 ease-in-out 
+          ${activeMenu === "products" ? "font-bold text-blue-600 bg-blue-100 shadow-lg" : "text-gray-700 hover:text-blue-600 hover:bg-gray-200"}`}
         >
           Products
+          {activeMenu === "products" && <span className="absolute inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
         </button>
+  
         <button
           onClick={() => handleMenuClick("wallet")}
-          className={`text-lg ${activeMenu === "wallet" ? "font-bold text-blue-600" : "text-gray-700"}`}
+          className={`px-4 py-2 rounded-md transition-all duration-300 ease-in-out 
+          ${activeMenu === "wallet" ? "font-bold text-blue-600 bg-blue-100 shadow-lg" : "text-gray-700 hover:text-blue-600 hover:bg-gray-200"}`}
         >
           Wallet
+          {activeMenu === "wallet" && <span className="absolute inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
         </button>
+  
         <button
           onClick={() => handleMenuClick("certificate")}
-          className={`text-lg ${activeMenu === "certificate" ? "font-bold text-blue-600" : "text-gray-700"}`}
+          className={`px-4 py-2 rounded-md transition-all duration-300 ease-in-out 
+          ${activeMenu === "certificate" ? "font-bold text-blue-600 bg-blue-100 shadow-lg" : "text-gray-700 hover:text-blue-600 hover:bg-gray-200"}`}
         >
           Smart Certificate
+          {activeMenu === "certificate" && <span className="absolute inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
         </button>
+  
         <button
           onClick={() => handleMenuClick("about")}
-          className={`text-lg ${activeMenu === "about" ? "font-bold text-blue-600" : "text-gray-700"}`}
+          className={`px-4 py-2 rounded-md transition-all duration-300 ease-in-out 
+          ${activeMenu === "about" ? "font-bold text-blue-600 bg-blue-100 shadow-lg" : "text-gray-700 hover:text-blue-600 hover:bg-gray-200"}`}
         >
           About Us
+          {activeMenu === "about" && <span className="absolute inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
         </button>
       </nav>
+  
 
       {/* Content Sections */}
       {activeMenu === "home" && (
