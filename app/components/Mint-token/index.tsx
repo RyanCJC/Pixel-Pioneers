@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 const MintTokenModal = ({ onSubmit, onClose, loggedInWalletAddress }) => {
   const [amount, setAmount] = useState("");
@@ -7,13 +7,11 @@ const MintTokenModal = ({ onSubmit, onClose, loggedInWalletAddress }) => {
   const [selectedAmount, setSelectedAmount] = useState(null);
   const [isCustomAmount, setIsCustomAmount] = useState(false);
   const [totalMinted, setTotalMinted] = useState(0); // State to keep track of total minted amount
-  const contractAddress = "0x1172DfA5Afd52D46617d7693DEe911887c33B4C9";
-  const fallbackUrl = "https://postman-echo.com/post?";
-
-  // State to manage transaction feedback
   const [transactionStatus, setTransactionStatus] = useState(null);
   const [transactionHash, setTransactionHash] = useState(null);
   const [transactionError, setTransactionError] = useState(null);
+  const contractAddress = "0x1172DfA5Afd52D46617d7693DEe911887c33B4C9";
+  const fallbackUrl = "https://postman-echo.com/post?";
 
   const predefinedAmounts = [10, 20, 30, 40, 50];
 
@@ -38,6 +36,9 @@ const MintTokenModal = ({ onSubmit, onClose, loggedInWalletAddress }) => {
       setTransactionStatus("failed");
       return;
     }
+
+    const amountToMint = parseInt(finalAmount, 10);
+    setTotalMinted((prev) => prev + amountToMint); // Update local state immediately
 
     try {
       setTransactionStatus("pending");
@@ -95,8 +96,6 @@ const MintTokenModal = ({ onSubmit, onClose, loggedInWalletAddress }) => {
   const handleCallbackResponse = (response) => {
     if (response.result.status === "success") {
       setTransactionStatus("success");
-      const mintedAmount = isCustomAmount ? parseInt(customAmount) : selectedAmount;
-      setTotalMinted((prev) => prev + mintedAmount); // Update the total minted amount
     } else if (response.result.status === "failed") {
       setTransactionStatus("failed");
       setTransactionError(response.result.message);

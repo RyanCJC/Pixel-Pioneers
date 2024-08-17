@@ -111,7 +111,8 @@ export default function Home() {
       console.log("Token Minted:", result);
   
       if (result.amount) {
-        setMintedAmount((prevAmount) => prevAmount + parseInt(result.amount, 10));
+        // Update local minted amount
+        setMintedAmount(prevAmount => prevAmount + parseInt(result.amount, 10));
       }
   
       toast.success(`🦄 Token minted successfully! Wallet address: ${walletAddress}`, {
@@ -137,7 +138,7 @@ export default function Home() {
         theme: "light",
       });
     }
-  };
+  };  
   
   const handleTransferSubmit = async (data) => {
     try {
@@ -213,6 +214,7 @@ export default function Home() {
   
       const result = await response.json();
       if (result.tokensRewarded) {
+        // Update local minted amount based on reward
         setMintedAmount(prevAmount => prevAmount + result.tokensRewarded);
       }
   
@@ -237,7 +239,7 @@ export default function Home() {
         theme: "light",
       });
     }
-  };
+  };  
 
   const handleMenuClick = (menu) => {
     setActiveMenu(menu);
@@ -253,7 +255,7 @@ export default function Home() {
           ${activeMenu === "home" ? "font-bold text-blue-600 bg-blue-100 shadow-lg" : "text-gray-700 hover:text-blue-600 hover:bg-gray-200"}`}
         >
           Home
-          {activeMenu === "home" && <span className="absolute inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
+          {activeMenu === "home" && <span className="relative inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
         </button>
   
         <button
@@ -262,7 +264,7 @@ export default function Home() {
           ${activeMenu === "products" ? "font-bold text-blue-600 bg-blue-100 shadow-lg" : "text-gray-700 hover:text-blue-600 hover:bg-gray-200"}`}
         >
           Products
-          {activeMenu === "products" && <span className="absolute inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
+          {activeMenu === "products" && <span className="relative inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
         </button>
   
         <button
@@ -271,7 +273,7 @@ export default function Home() {
           ${activeMenu === "wallet" ? "font-bold text-blue-600 bg-blue-100 shadow-lg" : "text-gray-700 hover:text-blue-600 hover:bg-gray-200"}`}
         >
           Wallet
-          {activeMenu === "wallet" && <span className="absolute inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
+          {activeMenu === "wallet" && <span className="relative inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
         </button>
   
         <button
@@ -280,7 +282,7 @@ export default function Home() {
           ${activeMenu === "certificate" ? "font-bold text-blue-600 bg-blue-100 shadow-lg" : "text-gray-700 hover:text-blue-600 hover:bg-gray-200"}`}
         >
           Smart Certificate
-          {activeMenu === "certificate" && <span className="absolute inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
+          {activeMenu === "certificate" && <span className="relative inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
         </button>
   
         <button
@@ -289,11 +291,11 @@ export default function Home() {
           ${activeMenu === "about" ? "font-bold text-blue-600 bg-blue-100 shadow-lg" : "text-gray-700 hover:text-blue-600 hover:bg-gray-200"}`}
         >
           About Us
-          {activeMenu === "about" && <span className="absolute inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
+          {activeMenu === "about" && <span className="relative inset-x-0 -bottom-1 h-1 bg-blue-600 rounded-full"></span>}
         </button>
       </nav>
   
-
+      
       {/* Content Sections */}
       {activeMenu === "home" && (
         <section className="flex flex-col items-center py-8">
@@ -346,13 +348,17 @@ export default function Home() {
           {/* Wallet Content */}
           <h2 className="text-3xl font-bold mb-4">Wallet</h2>
           <button
-            className="px-6 py-3 text-white font-semibold bg-blue-600 rounded-full hover:bg-blue-500 transition-colors mb-4"
+            className={`px-6 py-3 text-white font-semibold rounded-full transition-transform transform mb-4
+              ${isMintModalOpen ? "bg-blue-600" : "bg-blue-500"} 
+              hover:bg-blue-600 hover:scale-105`}
             onClick={() => openModal("mint")}
           >
             Mint Tokens
           </button>
           <button
-            className="px-6 py-3 text-white font-semibold bg-blue-600 rounded-full hover:bg-blue-500 transition-colors"
+            className={`px-6 py-3 text-white font-semibold rounded-full transition-transform transform mb-4
+              ${isTransferModalOpen ? "bg-blue-600" : "bg-blue-500"} 
+              hover:bg-blue-600 hover:scale-105`}
             onClick={() => openModal("transfer")}
           >
             Transfer Tokens
