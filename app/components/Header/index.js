@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import CreateWalletModal from "../Create-wallet";
 import MintTokenModal from "../Mint-token";
@@ -117,9 +118,14 @@ const Header = () => {
     <header className="w-full py-6 lg:py-4 relative border-b bg-gradient-to-r from-green-400 via-green-500 to-green-600">
       <div className="container mx-auto px-8 lg:px-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-white tracking-wider">
-          Decentralized Agriculture Sustainability Platform
+          Decentralized Agriculture SupplyChain Platform
         </h1>
-        <div>
+        <div className="flex items-center space-x-4">
+          <img src="https://i.im.ge/2024/08/18/fU7Xp8.Screenshot-2024-08-18-105432.png"        
+            className="w-16 h-16 object-cover"
+            style={{ mixBlendMode: 'multiply' }}
+          ></img>
+
           <button
             onClick={openCreateWalletModal}
             className="bg-white border-2 border-green-500 rounded-full py-2 px-6 hover:bg-green-700 hover:text-white text-green-600 font-semibold transition-all duration-300 shadow-lg"
@@ -139,6 +145,7 @@ const Header = () => {
           </button>
         </div>
       </div>
+      
       <AnimatePresence>
         {isCreateWalletModalOpen && (
           <motion.div

@@ -241,6 +241,23 @@ export default function Home() {
     }
   };  
 
+  const handleLogout = () => {
+    clearWalletAddress();
+    toast.info("Logged out successfully", {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "light",
+    });
+    
+    // Refresh the page
+    window.location.reload();
+  };
+  
+
   const handleMenuClick = (menu) => { 
     setActiveMenu(menu);
   };
@@ -298,7 +315,7 @@ export default function Home() {
         </button>
       </nav>
   
-      
+
       {/* Content Sections */}
       {activeMenu === "home" && (
         <section className="flex flex-col items-center py-8">
@@ -346,6 +363,7 @@ export default function Home() {
           )}
         </section>
       )}
+      
       {activeMenu === "wallet" && (
         <section className="flex flex-col items-center py-8">
           {/* Wallet Content */}
@@ -355,8 +373,8 @@ export default function Home() {
           <div className="w-100 h-40 bg-white shadow-lg rounded-lg p-6 flex flex-col justify-between">
             <div>
               <p className="text-lg font-semibold">Owner Name: John Doe</p>
-              <p className="text-lg">Wallet Name: Main Wallet</p>
-              <p className="text-lg">Wallet Address: {walletAddress}</p>
+              <p className="text-lg font-semibold">Wallet Name: Main Wallet</p>
+              <p className="text-lg font-semibold">Wallet Address: {walletAddress}</p>
             </div>
           </div>
 
@@ -380,6 +398,15 @@ export default function Home() {
             </button>
           </div>
 
+          {/* Logout Button */}
+          <div className="flex justify-center mt-6">
+            <button
+              className="px-6 py-3 text-white font-semibold bg-red-600 rounded-full hover:bg-red-500 hover:scale-105 transition-colors"
+              onClick={handleLogout}
+            >
+              Log Out
+            </button>
+          </div>
         </section>
       )}
 
