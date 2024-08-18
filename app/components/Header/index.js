@@ -116,7 +116,9 @@ const Header = () => {
   return (
     <header className="w-full py-6 lg:py-4 relative border-b bg-gradient-to-r from-green-400 via-green-500 to-green-600">
       <div className="container mx-auto px-8 lg:px-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white tracking-wider">AgriKey</h1>
+        <h1 className="text-2xl font-bold text-white tracking-wider">
+          Decentralized Agriculture Sustainability Platform
+        </h1>
         <div>
           <button
             onClick={openCreateWalletModal}

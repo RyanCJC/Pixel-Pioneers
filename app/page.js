@@ -241,14 +241,17 @@ export default function Home() {
     }
   };  
 
-  const handleMenuClick = (menu) => {
+  const handleMenuClick = (menu) => { 
     setActiveMenu(menu);
   };
 
   return (
-    <main className="flex min-h-screen flex-col px-4 bg-gray-100">
+    <main
+      className="flex min-h-screen flex-col px-4 bg-gray-100 bg-cover bg-center"
+      style={{ backgroundImage: "url('https://images.unsplash.com/photo-1560493676-04071c5f467b?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')" }}
+    >
       {/* Navigation Menu */}
-      <nav className="flex justify-around py-4 bg-white shadow-lg top-0">
+      <nav className="flex justify-around py-2 bg-white shadow-lg top-0">
         <button
           onClick={() => handleMenuClick("home")}
           className={`px-4 py-2 rounded-md transition-all duration-300 ease-in-out 
@@ -305,13 +308,13 @@ export default function Home() {
             Our platform aims to revolutionize the agricultural supply chain by leveraging blockchain technology for transparency, efficiency, and sustainability. Join us in making a difference.
           </p>
           <button
-            className="px-6 py-3 text-white font-semibold bg-blue-600 rounded-full hover:bg-blue-500 transition-colors mb-4"
+            className="px-6 py-3 text-white font-semibold bg-blue-600 rounded-full hover:bg-blue-500 hover:scale-105 transition-colors mb-4"
             onClick={() => handleMenuClick("products")}
           >
             Explore Products
           </button>
           <button
-            className="px-6 py-3 text-white font-semibold bg-green-600 rounded-full hover:bg-green-500 transition-colors"
+            className="px-6 py-3 text-white font-semibold bg-green-600 rounded-full hover:bg-green-500 hover:scale-105 transition-colors"
             onClick={() => handleMenuClick("about")}
           >
             Learn More About Us
@@ -323,7 +326,7 @@ export default function Home() {
           {/* Products Content */}
           <h2 className="text-3xl font-bold mb-4">Products</h2>
           <button
-            className="px-6 py-3 text-white font-semibold bg-blue-600 rounded-full hover:bg-blue-500 transition-colors mb-6"
+            className="px-6 py-3 text-white font-semibold bg-blue-600 rounded-full hover:bg-blue-500 hover:scale-105 -colors mb-6"
             onClick={() => openModal("listProduct")}
           >
             List Product
@@ -347,25 +350,39 @@ export default function Home() {
         <section className="flex flex-col items-center py-8">
           {/* Wallet Content */}
           <h2 className="text-3xl font-bold mb-4">Wallet</h2>
-          <button
-            className={`px-6 py-3 text-white font-semibold rounded-full transition-transform transform mb-4
-              ${isMintModalOpen ? "bg-blue-600" : "bg-blue-500"} 
-              hover:bg-blue-600 hover:scale-105`}
-            onClick={() => openModal("mint")}
-          >
-            Mint Tokens
-          </button>
-          <button
-            className={`px-6 py-3 text-white font-semibold rounded-full transition-transform transform mb-4
-              ${isTransferModalOpen ? "bg-blue-600" : "bg-blue-500"} 
-              hover:bg-blue-600 hover:scale-105`}
-            onClick={() => openModal("transfer")}
-          >
-            Transfer Tokens
-          </button>
-          <p className="text-lg mt-4">Your current token balance: {mintedAmount}</p>
+
+          {/* Square Container */}
+          <div className="w-100 h-40 bg-white shadow-lg rounded-lg p-6 flex flex-col justify-between">
+            <div>
+              <p className="text-lg font-semibold">Owner Name: John Doe</p>
+              <p className="text-lg">Wallet Name: Main Wallet</p>
+              <p className="text-lg">Wallet Address: {walletAddress}</p>
+            </div>
+          </div>
+
+          {/* Buttons arranged horizontally outside the square */}
+          <div className="flex justify-between w-full max-w-xs mt-6">
+            <button
+              className={`flex-1 px-6 py-3 text-white font-semibold rounded-full transition-transform transform 
+                ${isMintModalOpen ? "bg-blue-600" : "bg-blue-500"} 
+                hover:bg-blue-600 hover:scale-105 mx-2`}
+              onClick={() => openModal("mint")}
+            >
+              Mint Tokens
+            </button>
+            <button
+              className={`flex-1 px-6 py-3 text-white font-semibold rounded-full transition-transform transform 
+                ${isTransferModalOpen ? "bg-blue-600" : "bg-blue-500"} 
+                hover:bg-blue-600 hover:scale-105 mx-2`}
+              onClick={() => openModal("transfer")}
+            >
+              Transfer Tokens
+            </button>
+          </div>
+
         </section>
       )}
+
       {activeMenu === "certificate" && (
         <section className="flex flex-col items-center py-8">
           {/* Certificate Content */}
@@ -376,16 +393,21 @@ export default function Home() {
       {activeMenu === "about" && (
         <section className="flex flex-col items-center py-8">
           {/* About Content */}
-          <h2 className="text-3xl font-bold mb-4">About Us</h2>
-          <p className="text-lg text-center mb-6">{aboutContent}</p>
-          <h3 className="text-2xl font-semibold mt-6">Contact Us</h3>
-          <p className="text-lg text-center mb-6">{contactInfo}</p>
-          <h3 className="text-2xl font-semibold mt-6">FAQ</h3>
-          <ul className="list-disc pl-5">
-            {faq.map((item, index) => (
-              <li key={index} className="text-lg mb-2">{item}</li>
-            ))}
-          </ul>
+          <div className="relative p-6 rounded-lg shadow-md">
+            <div className="absolute inset-0 bg-gray-200 rounded-lg opacity-50"></div>
+            <div className="relative z-10">
+              <h2 className="text-3xl font-bold mb-4 text-center">About Us</h2>
+              <p className="text-lg text-center mb-8">{aboutContent}</p>
+              <h3 className="text-3xl font-bold mb-4 text-center">Contact Us</h3>
+              <p className="text-lg text-center mb-8">{contactInfo}</p>
+              <h3 className="text-3xl font-bold mb-4 text-center">FAQ</h3>
+              <ul className="list-disc pl-5">
+                {faq.map((item, index) => (
+                  <li key={index} className="text-lg mb-2">{item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </section>
       )}
 
