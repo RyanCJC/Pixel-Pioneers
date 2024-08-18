@@ -394,7 +394,7 @@ export default function Home() {
         <section className="flex flex-col items-center py-8">
           {/* About Content */}
           <div className="relative p-6 rounded-lg shadow-md">
-            <div className="absolute inset-0 bg-gray-200 rounded-lg opacity-50"></div>
+            <div className="absolute inset-0 bg-gray-200 rounded-lg opacity-70"></div>
             <div className="relative z-10">
               <h2 className="text-3xl font-bold mb-4 text-center">About Us</h2>
               <p className="text-lg text-center mb-8">{aboutContent}</p>
